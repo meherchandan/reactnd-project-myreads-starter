@@ -26,13 +26,13 @@ class BooksApp extends React.Component {
   }
   onShelfChange= (book,event)=>{
     const orgBooks = this.state.books;
-    console.log(orgBooks);
     const finalBooks = orgBooks.map(b=>{
       if(b.id ===book.id){
         return {...b,shelf:event.target.value}
       }
         return b;
-    })
+    });
+    BooksAPI.update(book,event.target.value);
     this.setState({books:finalBooks})
   }
 
@@ -56,6 +56,7 @@ class BooksApp extends React.Component {
       .catch(err=>this.setState({searchResult:[]}))},500);
   }
   onBookSelect =(book,event)=>{
+    BooksAPI.update(book,event.target.value);
     let selectedBook = this.state.searchResult.filter(b=>b.id ===book.id) ;
     let dashboardBooks = this.state.books.filter(b=>b.id ===book.id);
     selectedBook[0].shelf=event.target.value;
@@ -63,7 +64,8 @@ class BooksApp extends React.Component {
       this.setState(prevState=>({books:[...prevState.books, ...selectedBook]}))
     }
     else{
-      dashboardBooks[0].shelf = event.target.id;
+      dashboardBooks[0].shelf = event.target.value;
+      console.log( dashboardBooks[0])
       const RemainingBooks = this.state.books.filter(b=>b.id!==book.id)
       this.setState(prevState=>({books:[...RemainingBooks,...dashboardBooks]}));
     }
